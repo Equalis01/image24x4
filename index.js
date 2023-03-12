@@ -1,25 +1,28 @@
-const sharp = require("sharp");
-const fac = require('fast-average-color-node');
+const jimp = require("jimp")
 const fs = require("fs");
 
-let filename = "tocompress";
+let filename = "tacodiva";
 
-async function getColor(top,left,image) {
-    return (await fac.getAverageColor(image,{left,top,width:4,height:4})).hex;
+async function getColor(top, left, image) {
+    let rgba = Math.floor(image.getPixelColor(left, top));
+    let alpha = ((rgba >> 0) & 0xFF) / 255.0;
+    let newColor =
+        Math.floor(((rgba >> 8) & 0xFF) * alpha) << 0 |
+        Math.floor(((rgba >> 16) & 0xFF) * alpha) << 8 |
+        Math.floor(((rgba >> 24) & 0xFF) * alpha) << 16;
+    return "#" + newColor.toString(16).padStart(6, '0').substring(0, 6);
 }
-
 (async ()=>{
     let top = 0;
     let left = 0;
 
-    let sizedImage = await sharp(filename+".png").resize(480,360);
-    let buffered = await sizedImage.toBuffer()
+    let sizedImage = (await jimp.read("./"+filename+".png")).resize(480,360);
     alldata = [];
     for (let i = 0; i<90; i++) {
         left = 0;
         let data = [];
         for (let i2 = 0; i2<120; i2++) {
-            data.push(await getColor(top,left,buffered));
+            data.push(await getColor(top,left,sizedImage));
             left += 4;
         }
         top += 4;

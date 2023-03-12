@@ -9,7 +9,6 @@
   "author": "noraa_",
   "license": "ISC",
   "dependencies": {
-    "fast-average-color-node": "^2.6.0",
-    "sharp": "^0.31.3"
+    "jimp": "^0.22.7"
   }
 }
