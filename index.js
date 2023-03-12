@@ -13,12 +13,13 @@ async function getColor(top,left,image) {
     let left = 0;
 
     let sizedImage = await sharp(filename+".png").resize(480,360);
+    let buffered = await sizedImage.toBuffer()
     alldata = [];
     for (let i = 0; i<90; i++) {
         left = 0;
         let data = [];
         for (let i2 = 0; i2<120; i2++) {
-            data.push(await getColor(top,left,await sizedImage.toBuffer()));
+            data.push(await getColor(top,left,buffered));
             left += 4;
         }
         top += 4;
@@ -26,5 +27,5 @@ async function getColor(top,left,image) {
         console.log(`[LINE ${i+1}] ${((i/90)*100).toFixed(0)}% done`)
     }
     fs.writeFileSync("./"+filename+".txt",alldata.join("\n"))
-    console.log("[LINE 100] 100.00% done")
+    console.log("100.00% done");
 })()
